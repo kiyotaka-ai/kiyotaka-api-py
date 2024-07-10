@@ -1,0 +1,6 @@
+/proto
+__pycache__
+/*.zip
+/build
+/*.egg-info
+env
