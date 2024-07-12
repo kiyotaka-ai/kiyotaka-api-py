@@ -16,7 +16,11 @@ import betterproto
 import grpclib
 from betterproto.grpc.grpclib_server import ServiceBase
 
-from .. import TradeAggregation as _TradeAggregation__
+from .. import (
+    Trade as _Trade__,
+    TradeAggregation as _TradeAggregation__,
+    TradeSideAgnosticAggregation as _TradeSideAgnosticAggregation__,
+)
 
 
 if TYPE_CHECKING:
@@ -31,8 +35,14 @@ class PointType(betterproto.Enum):
     UNKNOWN_TYPE = 0
     """Default unknown type"""
 
+    TRADE = 1
+    """Raw trade data"""
+
     TRADE_AGG = 9
     """Aggregated trade data"""
+
+    TRADE_SIDE_AGNOSTIC_AGG = 107
+    """Aggregated trade data, but without grouping by side"""
 
 
 class PointSide(betterproto.Enum):
@@ -258,9 +268,18 @@ class Point(betterproto.Message):
     )
     """Identifier for the point series"""
 
+    trade: "_Trade__" = betterproto.message_field(7, group="point")
+    """Raw trade data"""
+
     trade_aggregation: "_TradeAggregation__" = betterproto.message_field(
         15, group="point"
     )
+    """Aggregated trade data"""
+
+    trade_side_agnostic_aggregation: "_TradeSideAgnosticAggregation__" = (
+        betterproto.message_field(108, group="point")
+    )
+    """Aggregated trade data, but without grouping by side"""
 
 
 @dataclass(eq=False, repr=False)

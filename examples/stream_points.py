@@ -6,6 +6,10 @@ import time
 from grpclib.client import Channel
 
 async def main():
+    metadata = {
+        'x-tharamine-key': 'YOUR_API_KEY_HERE'
+    }
+
     channel = Channel(
         host="grpc.api.tharamine.com",
         port=443,
@@ -23,7 +27,7 @@ async def main():
         from_=from_,
     )
 
-    stream = service.stream_points(data_request, timeout=3600)
+    stream = service.stream_points(data_request, timeout=3600, metadata=metadata)
     async for response in stream:
         print(response.to_json())
 
