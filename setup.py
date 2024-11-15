@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='tharamine',
+    name='kiyotaka',
     version='1.0.1',
-    url='tharamine.com',
-    author='tharamine developers',
-    author_email='operations@tharamine.com',
+    url='kiyotaka.com',
+    author='kiyotaka developers',
+    author_email='support@kiyotaka.com',
     packages=find_packages(),
-    description='Tharamine Public API'
+    description='Kiyotaka Public API'
 )
