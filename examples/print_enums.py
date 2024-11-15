@@ -1,7 +1,7 @@
-import tharamine
+import kiyotaka
 
 def main():
-    enums = [tharamine.Exchange, tharamine.Type]
+    enums = [kiyotaka.Exchange, kiyotaka.Type]
 
     for enum in enums:
         print(enum)

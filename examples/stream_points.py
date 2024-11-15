@@ -1,29 +1,29 @@
 import asyncio
-import tharamine
-import tharamine.api
+import kiyotaka
+import kiyotaka.api
 import time
 
 from grpclib.client import Channel
 
 async def main():
     metadata = {
-        'x-tharamine-key': 'YOUR_API_KEY_HERE'
+        'x-kiyotaka-key': 'YOUR_API_KEY_HERE'
     }
 
     channel = Channel(
-        host="grpc.api.tharamine.com",
+        host="grpc.api.kiyotaka.ai",
         port=443,
         ssl=True,
     )
-    service = tharamine.api.ApiStub(channel)
+    service = kiyotaka.api.ApiStub(channel)
 
     from_ = int(time.time()) - 60*60
 
-    data_request = tharamine.api.PointRequest(
-        type=[tharamine.api.PointType.TRADE_AGG],
-        exchange=[tharamine.api.PointExchange.BINANCE],
+    data_request = kiyotaka.api.PointRequest(
+        type=[kiyotaka.api.PointType.TRADE_AGG],
+        exchange=[kiyotaka.api.PointExchange.BINANCE],
         coin=["BTC"],
-        interval=tharamine.api.PointAggregationInterval.MINUTE,
+        interval=kiyotaka.api.PointAggregationInterval.MINUTE,
         from_=from_,
     )
 
