@@ -166,6 +166,9 @@ class PointMetaRequest(betterproto.Message):
     raw_symbol: List[str] = betterproto.string_field(5)
     """List of raw symbols to filter by"""
 
+    normalized_symbol: List[str] = betterproto.string_field(8)
+    """List of normalized symbols to filter by"""
+
     from_: int = betterproto.int64_field(6)
     """Start timestamp for data retrieval"""
 
@@ -197,6 +200,9 @@ class PointMetaResponse(betterproto.Message):
 
     raw_symbols: List[str] = betterproto.string_field(6)
     """List of available raw symbols"""
+
+    normalized_symbols: List[str] = betterproto.string_field(7)
+    """List of available normalized symbols"""
 
 
 @dataclass(eq=False, repr=False)
@@ -414,6 +420,23 @@ class ApiStub(betterproto.ServiceStub):
             metadata=metadata,
         )
 
+    async def get_normalized_symbols(
+        self,
+        point_meta_request: "PointMetaRequest",
+        *,
+        timeout: Optional[float] = None,
+        deadline: Optional["Deadline"] = None,
+        metadata: Optional["MetadataLike"] = None
+    ) -> "PointMetaResponse":
+        return await self._unary_unary(
+            "/api.API/GetNormalizedSymbols",
+            point_meta_request,
+            PointMetaResponse,
+            timeout=timeout,
+            deadline=deadline,
+            metadata=metadata,
+        )
+
 
 class ApiBase(ServiceBase):
 
@@ -447,6 +470,11 @@ class ApiBase(ServiceBase):
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
 
     async def get_raw_symbols(
+        self, point_meta_request: "PointMetaRequest"
+    ) -> "PointMetaResponse":
+        raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
+
+    async def get_normalized_symbols(
         self, point_meta_request: "PointMetaRequest"
     ) -> "PointMetaResponse":
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
@@ -503,6 +531,13 @@ class ApiBase(ServiceBase):
         response = await self.get_raw_symbols(request)
         await stream.send_message(response)
 
+    async def __rpc_get_normalized_symbols(
+        self, stream: "grpclib.server.Stream[PointMetaRequest, PointMetaResponse]"
+    ) -> None:
+        request = await stream.recv_message()
+        response = await self.get_normalized_symbols(request)
+        await stream.send_message(response)
+
     def __mapping__(self) -> Dict[str, grpclib.const.Handler]:
         return {
             "/api.API/GetPoints": grpclib.const.Handler(
@@ -543,6 +578,12 @@ class ApiBase(ServiceBase):
             ),
             "/api.API/GetRawSymbols": grpclib.const.Handler(
                 self.__rpc_get_raw_symbols,
+                grpclib.const.Cardinality.UNARY_UNARY,
+                PointMetaRequest,
+                PointMetaResponse,
+            ),
+            "/api.API/GetNormalizedSymbols": grpclib.const.Handler(
+                self.__rpc_get_normalized_symbols,
                 grpclib.const.Cardinality.UNARY_UNARY,
                 PointMetaRequest,
                 PointMetaResponse,
